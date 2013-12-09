@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<rss version="2.0">
+  <channel>
+    <title>$RSSTITLE</title>
+    <link>$RSSLINK</link>
+    <description>$RSSDESC</description>
+    <language>en-us</language>
+    <pubDate>$RSSPUBDATE</pubDate>
+    <generator>rsscat</generator>
+#foreach($row in $output.RowArray)
+    <item>
+      <title>$row.getColumnValue("title")</title>
+      <link>$row.getColumnValue("link")</link>
+      <description>$row.getColumnValue("description")</description>
+      <pubDate>$row.getColumnValue("date")</pubDate>
+      <guid>$row.getColumnValue("guid")</guid>
+    </item>
+#end
+  </channel>
+</rss>

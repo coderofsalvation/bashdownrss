@@ -1,0 +1,45 @@
+#!/bin/bash 
+TMPFILE=/tmp/.rsscat-$(whoami)
+
+generate(){
+  echo "generate"
+}
+
+add(){
+  rssname="$1"; title="$2"; link="$3"; dir="$TMPFILE.rssname"; file="$dir/$(date +%s).bash"
+  description="$(cat - )"
+  [[ ${#title} == 0 ]] && title="${description:0:20}"
+  [[ ! -d "$dir" ]] && mkdir "$dir"
+  echo "TITLE='$title'" > "$file"
+  echo "DESC='$title'" >> "$file"
+  echo "LINK='$link'"  >> "$file"
+  return 0
+}
+
+fetch(){
+    IFS=''; cat - | while read line; do 
+      line="$(eval "echo \"$( echo "$line" | sed 's/"/\\"/g')\"")"; # process bash in snippet
+      echo "$line"
+    done
+}
+
+reset(){
+  rm -rf $TMPFILE*
+}
+
+_usage(){
+  txt='Usage: 
+
+  update:     echo "some message" | rsscat news.rss [title] [link]
+  append:     rsscat reset news.rss
+  print:      rsscat generate news.rss
+  '; echo "$txt"; exit 1
+}
+
+if [[ "$1" == "add" ]]; then 
+  cat - | add 
+  find $TMPFILE*
+else
+  [[ ! -n $1 ]] && _usage
+  "$@"
+fi
