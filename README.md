@@ -15,8 +15,8 @@ Usage
         reset:      bashdownrss reset your.rss
         print:      bashdownrss generate your.rss
 
-Examples
-========
+Example #1
+==========
 
 Here's how easy it is to add items to a RSS feed:
 
@@ -27,7 +27,20 @@ And here's how to generate the RSS feed:
 
     RSSTITLE="my feed" RSSLINK="http://mysite.com" RSSDESC="lorem ipsum"  ./bashdownrss print myfeed.rss > /var/www/foo/myfeed.rss
 
+
+Example #2
+==========
 One doesnt have to be an Einstein to figure this makes it perfect for crontab and *any* kind of applications..since its bash :)
+
+put this into your crontab to generate the feed hourly (feel free to modify):
+    
+    @hourly RSSTITLE="my feed" RSSLINK="http://mysite.com" RSSDESC="lorem ipsum" ./bashdownrss print errors.rss > /var/www/foo/errors.rss
+
+now with tail(f) you can easily monitor some (log)files etc:
+
+    tailf /some/application/log.txt | grep "ERROR" | ./bashdownrss add errors.rss
+
+This is just a simple example but you'll get the point I guess :)
 
 Requirements
 ============
