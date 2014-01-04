@@ -34,7 +34,7 @@ One doesnt have to be an Einstein to figure this makes it perfect for crontab an
 
 put this into your crontab to generate the feed hourly (feel free to modify):
     
-    @hourly RSSTITLE="my feed" RSSLINK="http://mysite.com" RSSDESC="lorem ipsum" ./bashdownrss print errors.rss > /var/www/foo/errors.rss
+    @hourly RSSTITLE="my feed" RSSLINK="http://mysite.com" RSSDESC="lorem ipsum" /path/to/bashdownrss print errors.rss > /var/www/foo/errors.rss
 
 now with tail(f) you can easily monitor some (log)files etc:
 
