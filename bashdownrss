@@ -14,27 +14,49 @@
 # 
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+TMPFILE="/tmp/.bashdownrss.$(whoami)"
+SELF_PATH="$(dirname "$(readlink -f "$0")" )"
 
-generate(){
-  echo "generate"
+feeds(){
+  find $TMPFILE* -type d | while read feed; do 
+    rss="$(echo "$feed" | sed "s/.*$(whoami)\.//g")"
+    printf "  %-20s => %s\n" "$rss" "$feed" 
+  done
+}
+
+print(){
+  RSSNAME="$1"; 
+  PUBDATE="$(date -R)"
+  cat "$SELF_PATH/rss.bashdown" | fetch 
+}
+
+printitems(){
+  RSSNAME="$1"
+  find $TMPFILE.$RSSNAME/* > $TMPFILE.$RSSNAME.items
+  while read file; do 
+    source "$file"; 
+    cat $SELF_PATH/rssitem.bashdown | fetch
+  done < $TMPFILE.$RSSNAME.items
 }
 
 add(){
-  rssname="$1"; title="$2"; link="$3"; dir="$TMPFILE.rssname"; file="$dir/$(date +%s).bash"
+  rssname="$1"; title="$2"; link="$3"; dir="$TMPFILE.$rssname"; file="$dir/$(date +%s).bash"
   description="$(cat - )"
   [[ ${#title} == 0 ]] && title="${description:0:20}"
   [[ ! -d "$dir" ]] && mkdir "$dir"
   echo "TITLE='$title'" > "$file"
   echo "DESC='$title'" >> "$file"
   echo "LINK='$link'"  >> "$file"
+  echo "DATE='$(date -R)'"  >> "$file"
+  echo "GUID='$(date +%s)'"  >> "$file"
   return 0
 }
 
 fetch(){
-    IFS=''; cat - | while read line; do 
-      line="$(eval "echo \"$( echo "$line" | sed 's/"/\\"/g')\"")"; # process bash in snippet
-      echo "$line"
-    done
+  IFS=''; cat - | while read line; do 
+    line="$(eval "echo \"$( echo "$line" | sed 's/"/\\"/g')\"")"; # process bash in snippet
+    echo "$line"
+  done
 }
 
 reset(){
@@ -44,15 +66,16 @@ reset(){
 _usage(){
   txt='Usage: 
 
-  update:     echo "some message" | rsscat news.rss [title] [link]
-  append:     rsscat reset news.rss
-  print:      rsscat generate news.rss
+  add:        echo "some message" | bashdownrss your.rss [title] [link]
+  feeds:      lists all active feeds 
+  append:     bashdownrss reset your.rss
+  print:      bashdownrss generate your.rss
   '; echo "$txt"; exit 1
 }
 
 if [[ "$1" == "add" ]]; then 
-  cat - | add 
-  find $TMPFILE*
+  cat - | add "$2" "$3" "$4"
+  [[ -n $DEBUG ]] && find $TMPFILE*
 else
   [[ ! -n $1 ]] && _usage
   "$@"

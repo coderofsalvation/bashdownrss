@@ -1,0 +1,7 @@
+    <item>
+      <title>$TITLE</title>
+      <link>$LINK</link>
+      <description>$DESC</description>
+      <pubDate>$DATE</pubDate>
+      <guid>$GUID</guid>
+    </item>
