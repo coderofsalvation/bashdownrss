@@ -25,14 +25,14 @@ feeds(){
 }
 
 print(){
-  RSSNAME="$1"; 
+  RSSNAME="$1"; RSSMAXITEMS="$2"
   PUBDATE="$(date -R)"
   cat "$SELF_PATH/rss.bashdown" | fetch 
 }
 
 printitems(){
-  RSSNAME="$1"
-  find $TMPFILE.$RSSNAME/* > $TMPFILE.$RSSNAME.items
+  RSSNAME="$1"; RSSMAXITEMS="$2"
+  find $TMPFILE.$RSSNAME/* | tail -n$RSSMAXITEMS > $TMPFILE.$RSSNAME.items
   while read file; do 
     source "$file"; 
     cat $SELF_PATH/rssitem.bashdown | fetch
@@ -69,7 +69,7 @@ _usage(){
   add:        echo "some message" | bashdownrss your.rss [title] [link]
   feeds:      lists all active feeds 
   append:     bashdownrss reset your.rss
-  print:      bashdownrss generate your.rss
+  print:      bashdownrss print your.rss [maxitems]
   '; echo "$txt"; exit 1
 }
 

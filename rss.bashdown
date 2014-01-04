@@ -7,6 +7,6 @@
     <language>en-us</language>
     <pubDate>$(date -R)</pubDate>
     <generator>rsscat</generator>
-    $( $SELF_PATH/bashdownrss printitems $RSSNAME )
+    $( $SELF_PATH/bashdownrss printitems $RSSNAME $RSSMAXITEMS)
   </channel>
 </rss>

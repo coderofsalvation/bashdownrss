@@ -13,7 +13,9 @@ Usage
 
         add:        echo "some message" | bashdownrss your.rss [title] [link]
         reset:      bashdownrss reset your.rss
-        print:      bashdownrss generate your.rss
+        print:      bashdownrss generate your.rss [maxitems]
+
+One doesnt have to be an Einstein to figure this makes it perfect for crontab, fifo/pipe's and *any* kind of applications..since its all bash :)
 
 Example #1
 ==========
@@ -27,14 +29,14 @@ And here's how to generate the RSS feed:
 
     RSSTITLE="my feed" RSSLINK="http://mysite.com" RSSDESC="lorem ipsum"  ./bashdownrss print myfeed.rss > /var/www/foo/myfeed.rss
 
+(optionally you can specify an maxitems, see next example of the 'print' command)
 
 Example #2
 ==========
-One doesnt have to be an Einstein to figure this makes it perfect for crontab and *any* kind of applications..since its bash :)
 
-put this into your crontab to generate the feed hourly (feel free to modify):
+put this into your crontab to generate the feed hourly (feel free to modify) with always the latest 10 items:
     
-    @hourly RSSTITLE="my feed" RSSLINK="http://mysite.com" RSSDESC="lorem ipsum" /path/to/bashdownrss print errors.rss > /var/www/foo/errors.rss
+    @hourly RSSTITLE="my feed" RSSLINK="http://mysite.com" RSSDESC="lorem ipsum" /path/to/bashdownrss print errors.rss 10 > /var/www/foo/errors.rss
 
 now with tail(f) you can easily monitor some (log)files etc:
 
