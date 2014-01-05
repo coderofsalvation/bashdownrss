@@ -18,6 +18,7 @@ TMPFILE="/tmp/.bashdownrss.$(whoami)"
 SELF_PATH="$(dirname "$(readlink -f "$0")" )"
 
 feeds(){
+  find $TMPFILE* -type d &>/dev/null || return 0
   find $TMPFILE* -type d | while read feed; do 
     rss="$(echo "$feed" | sed "s/.*$(whoami)\.//g")"
     printf "  %-20s => %s\n" "$rss" "$feed" 
@@ -31,8 +32,8 @@ print(){
 }
 
 printitems(){
-  RSSNAME="$1"; RSSMAXITEMS="$2"
-  find $TMPFILE.$RSSNAME/* | tail -n$RSSMAXITEMS > $TMPFILE.$RSSNAME.items
+  RSSNAME="$1"; [[ -n $2 ]] && RSSMAXITEMS="-n$2"
+  find $TMPFILE.$RSSNAME/* | tail $RSSMAXITEMS > $TMPFILE.$RSSNAME.items
   while read file; do 
     source "$file"; 
     cat $SELF_PATH/rssitem.bashdown | fetch
@@ -49,18 +50,15 @@ add(){
   echo "LINK='$link'"  >> "$file"
   echo "DATE='$(date -R)'"  >> "$file"
   echo "GUID='$(date +%s)'"  >> "$file"
-  return 0
-}
-
-fetch(){
-  IFS=''; cat - | while read line; do 
+  return 
     line="$(eval "echo \"$( echo "$line" | sed 's/"/\\"/g')\"")"; # process bash in snippet
     echo "$line"
   done
 }
 
 reset(){
-  rm -rf $TMPFILE*
+  [[ ${#1} == "0" ]] && read -p "[!] no feed given as argument..press ctrl-c to *not* delete all feeds" flop
+  [[ -n $1 ]] && rm -rf $TMPFILE.$1* || rm -rf $TMPFILE*
 }
 
 _usage(){
@@ -68,7 +66,7 @@ _usage(){
 
   add:        echo "some message" | bashdownrss your.rss [title] [link]
   feeds:      lists all active feeds 
-  append:     bashdownrss reset your.rss
+  reset:      bashdownrss reset [your.rss]
   print:      bashdownrss print your.rss [maxitems]
   '; echo "$txt"; exit 1
 }
