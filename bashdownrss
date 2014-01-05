@@ -50,7 +50,11 @@ add(){
   echo "LINK='$link'"  >> "$file"
   echo "DATE='$(date -R)'"  >> "$file"
   echo "GUID='$(date +%s)'"  >> "$file"
-  return 
+  return 0;
+}
+
+fetch(){
+  IFS=''; cat - | while read line; do 
     line="$(eval "echo \"$( echo "$line" | sed 's/"/\\"/g')\"")"; # process bash in snippet
     echo "$line"
   done
