@@ -11,7 +11,7 @@ Usage
     
       Usage: 
 
-        add:        echo "some message" | bashdownrss your.rss [title] [link]
+        add:        echo "some message" | bashdownrss add your.rss [title] [link]
         reset:      bashdownrss reset your.rss
         print:      bashdownrss generate your.rss [maxitems]
 
